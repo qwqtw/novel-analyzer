@@ -11,6 +11,9 @@ from functions import *  # Assuming your functions are in a file named 'function
 
 # Set up Streamlit page
 st.set_page_config(page_title="Novel Text Analyzer", layout="wide")
+font_path = "SIMHEI.TTF"
+prop = font_manager.FontProperties(fname=font_path)
+rcParams["font.family"] = prop.get_name()
 
 
 def display_word_frequency_chart(common_words):
@@ -19,7 +22,7 @@ def display_word_frequency_chart(common_words):
 
     # Create bar chart
     plt.figure(figsize=(20, 8))
-    plt.rcParams["font.sans-serif"] = ["SimHei"]
+    plt.rcParams["font.sans-serif"] = ["SIMHEI"]
     plt.rcParams["axes.unicode_minus"] = False
 
     cmap = plt.get_cmap("Blues")
