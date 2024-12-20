@@ -11,9 +11,6 @@ import numpy as np
 import io
 import wordcloud
 import streamlit as st
-import os
-
-font_path = os.path.join(os.path.dirname(__file__), "fonts", "SIMHEI.TTF")
 
 
 def load_stop_words(
@@ -157,7 +154,7 @@ def word_frequency_analysis(words, top_n=50, specific_keywords=None):
 def generate_wordcloud(words):
     word_string = " ".join(words)
     wordcloud_obj = WordCloud(
-        font_path=font_path,
+        font_path=r"SIMHEI.TTF",  # Make sure the path is correct
         width=800,
         height=400,
         background_color="white",
@@ -177,6 +174,8 @@ def analyze_keyword_distribution(word_list, name_ls, num_segments=500, top_n=5):
     # Initialize DataFrame to hold the histogram data for each keyword (including combined ones)
     hist_df = pd.DataFrame()
 
+    # Set font to one that supports Chinese characters
+    font_path = r"SIMHEI.TTF"  # Adjust based on your system
     prop = font_manager.FontProperties(fname=font_path)
     plt.rcParams["font.family"] = prop.get_name()
 
