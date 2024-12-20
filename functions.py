@@ -1,7 +1,7 @@
 import re
 import jieba
 from collections import Counter
-from matplotlib import font_manager
+from matplotlib import font_manager, rcParams
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import jieba.posseg as pseg
@@ -11,6 +11,14 @@ import numpy as np
 import io
 import wordcloud
 import streamlit as st
+
+try:
+    # Attempt to use a custom font
+    rcParams["font.sans-serif"] = ["SimHei"]  # For Chinese
+except Exception as e:
+    print(f"Error loading custom font: {e}")
+    # Fallback to a default font
+    rcParams["font.sans-serif"] = ["DejaVu Sans"]
 
 
 def load_stop_words(
