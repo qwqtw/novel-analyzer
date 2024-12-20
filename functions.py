@@ -175,7 +175,7 @@ def analyze_keyword_distribution(word_list, name_ls, num_segments=500, top_n=5):
     hist_df = pd.DataFrame()
 
     # Set font to one that supports Chinese characters
-    font_path = r"C:\Windows\Fonts\simhei.ttf"  # Adjust based on your system
+    font_path = r"SIMHEI.TTF"  # Adjust based on your system
     prop = font_manager.FontProperties(fname=font_path)
     plt.rcParams["font.family"] = prop.get_name()
 
