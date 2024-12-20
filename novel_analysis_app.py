@@ -29,6 +29,29 @@ def load_text(file_content):
     return file_content.decode(encoding, errors="ignore")
 
 
+# Process the user input to match the desired format
+def process_keywords(keywords_input):
+    try:
+        # Replace Chinese commas with English commas for consistent splitting
+        keywords_input = keywords_input.replace("，", ",")
+
+        # Split the input into groups by English comma
+        keyword_groups = keywords_input.split(",")
+
+        # Prepare the list to store the final result
+        final_keywords = []
+
+        # For each keyword group, split by '+' to form subgroups and add to final list
+        for group in keyword_groups:
+            subgroups = group.split("+")
+            # Clean any extra spaces and add to the final list
+            final_keywords.append([keyword.strip() for keyword in subgroups])
+
+        return final_keywords
+    except Exception as e:
+        raise ValueError(f"Error processing keywords: {e}")
+
+
 def main():
     st.title("Novel Text Analysis")
     st.write(
@@ -36,6 +59,10 @@ def main():
     )
 
     uploaded_file = st.file_uploader("Choose a .txt file", type="txt")
+    keywords_input = st.text_area(
+        "Enter keywords for analysis (in the format: keyword1+keyword2, keyword3, keyword4+keyword5)"
+    )
+
     if uploaded_file is not None:
         # Read the uploaded file content as bytes
         file_content = uploaded_file.read()
@@ -69,6 +96,23 @@ def main():
                 "The text contains no valid words after preprocessing. Please check your input."
             )
             return
+
+        # Process the user-provided keywords
+        if keywords_input:
+            try:
+                keywords = process_keywords(keywords_input)
+                st.write(f"Processed keywords: {keywords}")
+            except ValueError as e:
+                st.error(str(e))
+                return
+        else:
+            keywords = []
+
+        # Keyword Frequency Analysis for provided keywords
+        if keywords:
+            st.header("Keyword Frequency Analysis")
+            keyword_freq_image = analyze_keyword_distribution(words, keywords)
+            st.image(keyword_freq_image, caption="Keyword Frequency Analysis")
 
         # Word Frequency Analysis
         st.header("Word Frequency Analysis")

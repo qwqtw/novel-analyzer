@@ -234,8 +234,86 @@ def analyze_keyword_distribution(word_list, name_ls, num_segments=500, top_n=5):
         image_buffer.seek(0)
         return image_buffer
     else:
-        # Add logic for handling specific keyword groups if needed.
-        pass
+        # If specific keywords are provided, proceed with the logic for keyword groups
+        for keyword_group in name_ls:
+            if isinstance(keyword_group, list):
+                combined_hist_data = np.zeros(
+                    num_segments
+                )  # Initialize array for combined counts
+                combined_total_count = 0  # To store the total count for the group
+                for keyword in keyword_group:
+                    # print(f"Searching for individual keyword: {keyword}")
+                    # Find the positions of each keyword in the text
+                    idx = [
+                        i
+                        for i, word in enumerate(data)
+                        if re.search(r"\b" + re.escape(keyword) + r"\b", word)
+                    ]
+                    # print(f"Matches for keyword '{keyword}': {len(idx)}")
+                    # Data segmentation: divide the data into 'num_segments' equal bins
+                    hist_data = np.histogram(
+                        idx, bins=num_segments, range=[0, len(data)]
+                    )[0]
+                    # Add the keyword's histogram data to the combined counts
+                    combined_hist_data += hist_data
+                    combined_total_count += len(idx)
+
+                # Store the combined histogram data for the group
+                hist_df["_".join(keyword_group)] = combined_hist_data
+                hist_df["_".join(keyword_group) + "_total"] = [
+                    combined_total_count
+                ] * num_segments
+            else:
+                # print(f"Searching for keyword: {keyword_group}")
+                # Find the positions of the keyword in the text
+                idx = [
+                    i
+                    for i, word in enumerate(data)
+                    if re.search(r"\b" + re.escape(keyword_group) + r"\b", word)
+                ]
+                # print(f"Matches for keyword '{keyword_group}': {len(idx)}")
+                # Data segmentation: divide the data into 'num_segments' equal bins
+                hist_data = np.histogram(idx, bins=num_segments, range=[0, len(data)])[
+                    0
+                ]
+                hist_df[keyword_group] = hist_data
+                hist_df[keyword_group + "_total"] = [len(idx)] * num_segments
+
+        # Plot combined histogram (all keywords together)
+        plt.figure(figsize=(16, 6))
+        for keyword in hist_df.columns:
+            if not keyword.endswith(
+                "_total"
+            ):  # Ignore total count columns for plotting
+                total_count = hist_df[keyword + "_total"].iloc[0]
+                # Plot keyword frequency distribution
+                plt.plot(
+                    np.linspace(
+                        0, 100, num_segments
+                    ),  # Change to percentage scale for x-axis
+                    hist_df[keyword],
+                    label=f"Keyword: {keyword} (Total: {total_count})\n关键词: {keyword} (总数: {total_count})",
+                )
+
+        plt.title(
+            "Keyword Frequency Distribution in Text Segments\n关键词在文本分段中的频率分布",
+            fontsize=16,
+        )
+        plt.xlabel("Progression of Novel (%)\n小说进度 (%)", fontsize=14)
+        plt.ylabel("Frequency\n频率", fontsize=14)
+        plt.xticks(
+            np.linspace(0, 100, 6),  # Set x-axis to show 0%, 20%, 40%, ..., 100%
+            [f"{i:.0f}%" for i in np.linspace(0, 100, 6)],
+        )
+        plt.legend()
+        plt.grid(True)
+        plt.tight_layout()
+
+        # Save to buffer for Streamlit
+        image_buffer = io.BytesIO()
+        plt.savefig(image_buffer, format="png")
+        image_buffer.seek(0)
+        return image_buffer
 
 
 def main(file_path):
