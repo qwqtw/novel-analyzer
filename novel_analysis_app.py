@@ -1,4 +1,5 @@
 import jieba
+import string
 import streamlit as st
 from functions import (
     load_stop_words,
@@ -9,6 +10,32 @@ from functions import (
     generate_wordcloud,
     analyze_keyword_distribution,
 )
+
+
+def detect_language(text):
+    # A simple heuristic: if the text contains Chinese characters, it's Chinese
+    if any("\u4e00" <= char <= "\u9fff" for char in text):
+        return "chinese"
+    return "english"
+
+
+def preprocess_text_based_on_language(text, stop_words):
+    language = detect_language(text)
+
+    if language == "chinese":
+        # Use jieba for Chinese tokenization
+        words = jieba.lcut(text)
+    else:
+        # For English, split by whitespace and remove punctuation
+        words = (
+            text.lower().translate(str.maketrans("", "", string.punctuation)).split()
+        )
+
+    # Remove stop words and non-alphabetic tokens (for English)
+    filtered_words = [
+        word for word in words if word.isalpha() and word not in stop_words
+    ]
+    return filtered_words
 
 
 def main():
@@ -24,11 +51,15 @@ def main():
             "utf-8"
         )  # Decode the file content to a string
 
-        basic_statistics(text)
-        words = jieba.lcut(text)
+        # Display basic statistics
+        stats = basic_statistics(text)
+        st.subheader("Basic Statistics")
+        st.text(stats)  # Display the basic statistics on the UI
+
         stop_words = load_stop_words()
-        words = preprocess_text(text, stop_words)
-        words = [word for word in words if len(word) > 1 and word not in stop_words]
+
+        # Preprocess the text based on detected language (Chinese or English)
+        words = preprocess_text_based_on_language(text, stop_words)
 
         # Word Frequency Analysis
         st.header("Word Frequency Analysis")

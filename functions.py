@@ -55,10 +55,13 @@ def basic_statistics(text):
     sentence_count = len(sentences)
     avg_sentence_length = word_count / sentence_count if sentence_count > 0 else 0
 
-    print(f"字符总数/characters: {characters}")
-    print(f"单词总数/word count: {word_count}")
-    print(f"句子总数/sentence count: {sentence_count}")
-    print(f"平均句长/average sentence length: {avg_sentence_length:.2f} 字")
+    stats = (
+        f"字符总数(characters): {characters}\n"
+        f"单词总数(word count): {word_count}\n"
+        f"句子总数(sentence count): {sentence_count}\n"
+        f"平均句长(average sentence length): {avg_sentence_length:.2f} 字"
+    )
+    return stats
 
 
 def word_frequency_analysis(words, top_n=50, specific_keywords=None):
@@ -135,7 +138,7 @@ def word_frequency_analysis(words, top_n=50, specific_keywords=None):
             va="bottom",
             fontsize=10,
             color="black",
-            rotation=0,
+            rotation=45,
         )
 
     plt.tight_layout()
