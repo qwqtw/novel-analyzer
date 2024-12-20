@@ -4,3 +4,10 @@ jieba
 pandas
 matplotlib
 wordcloud
+string
+re
+collections
+jieba.posseg
+numpy
+io
+matplotlib.pyplot
