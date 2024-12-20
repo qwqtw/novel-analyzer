@@ -108,23 +108,23 @@ def main():
         else:
             keywords = []
 
-        # Keyword Frequency Analysis for provided keywords
+        # Reprocess the words before keyword frequency analysis
         if keywords:
             st.header("Keyword Frequency Analysis")
             keyword_freq_image = analyze_keyword_distribution(words, keywords)
             st.image(keyword_freq_image, caption="Keyword Frequency Analysis")
 
-        # Word Frequency Analysis
+        # Reprocess the words before word frequency analysis
         st.header("Word Frequency Analysis")
         word_freq_image = word_frequency_analysis(words)
         st.image(word_freq_image, caption="Word Frequency Analysis")
 
-        # Word Cloud Generation
+        # Reprocess the words before word cloud generation
         st.header("Word Cloud")
         wordcloud_image = generate_wordcloud(words)
         st.image(wordcloud_image, caption="Word Cloud")
 
-        # Keyword Distribution
+        # Reprocess the words before keyword distribution analysis
         st.header("Keyword Frequency Distribution")
         keyword_dist_image = analyze_keyword_distribution(words, [])
         st.image(keyword_dist_image, caption="Keyword Frequency Distribution")
