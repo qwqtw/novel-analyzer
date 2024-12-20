@@ -154,7 +154,7 @@ def word_frequency_analysis(words, top_n=50, specific_keywords=None):
 def generate_wordcloud(words):
     word_string = " ".join(words)
     wordcloud_obj = WordCloud(
-        font_path="C:\Windows\Fonts\msyh.ttc",  # Make sure the path is correct
+        font_path=r"SIMHEI.TTF",  # Make sure the path is correct
         width=800,
         height=400,
         background_color="white",
