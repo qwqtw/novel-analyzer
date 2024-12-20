@@ -14,7 +14,7 @@ import streamlit as st
 
 
 def load_stop_words(
-    file_path=r"C:\Users\User\Documents\GitHub\novel-analyzer\custom_stopwords.txt",
+    file_path=r"custom_stopwords.txt",
 ):
     with open(file_path, "r", encoding="utf-8") as file:
         stop_words = set(
