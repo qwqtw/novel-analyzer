@@ -56,10 +56,10 @@ def basic_statistics(text):
     avg_sentence_length = word_count / sentence_count if sentence_count > 0 else 0
 
     stats = (
-        f"字符总数(characters): {characters}\n"
-        f"单词总数(word count): {word_count}\n"
-        f"句子总数(sentence count): {sentence_count}\n"
-        f"平均句长(average sentence length): {avg_sentence_length:.2f} 字"
+        f"字符总数(Characters): {characters}\n"
+        f"单词总数(Word Count): {word_count}\n"
+        f"句子总数(Sentence Count): {sentence_count}\n"
+        f"平均句长(Average Sentence Length): {avg_sentence_length:.2f} 字"
     )
     return stats
 
