@@ -13,28 +13,37 @@ import wordcloud
 import streamlit as st
 
 
-def load_stop_words(file_path="custom_stopwords.txt"):
+def load_stop_words(
+    file_path=r"C:\Users\User\Documents\GitHub\novel-analyzer\custom_stopwords.txt",
+):
     with open(file_path, "r", encoding="utf-8") as file:
-        stop_words = set(word.strip().lower() for word in file.read().splitlines())
+        stop_words = set(
+            word.strip().lower() for word in file.read().splitlines()
+        )  # Convert to lowercase
     return stop_words
 
 
-def detect_encoding(file):
-    raw_data = file.read(10000)  # Read the first 10KB of the file
+def detect_encoding(file_path):
+    with open(file_path, "rb") as file:
+        raw_data = file.read(10000)  # Read the first 10KB of the file
     result = chardet.detect(raw_data)
     return result["encoding"]
 
 
-def load_text(file):
-    encoding = detect_encoding(file)
-    file.seek(0)  # Rewind the file pointer
-    text = file.read().decode(encoding, errors="ignore")
+def load_text(file_path):
+    encoding = detect_encoding(file_path)
+    print(f"Detected file encoding: {encoding}")
+    with open(file_path, "r", encoding=encoding, errors="ignore") as file:
+        text = file.read()
     return text
 
 
+# Function for text preprocessing: Tokenization, lowercasing, and stop words removal
 def preprocess_text(text, stop_words):
-    words = jieba.lcut(text)
-    filtered_words = [word for word in words if word.lower() not in stop_words]
+    words = jieba.lcut(text)  # Tokenize the text
+    filtered_words = [
+        word for word in words if word.lower() not in stop_words
+    ]  # Remove stop words (case-insensitive)
     return filtered_words
 
 
