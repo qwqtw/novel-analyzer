@@ -115,7 +115,7 @@ def word_frequency_analysis(words, top_n=50, specific_keywords=None):
 
     # Create a bar chart to visualize word frequencies
     plt.figure(figsize=(20, 8))
-    plt.rcParams["font.sans-serif"] = ["SimHei"]
+    plt.rcParams["font.sans-serif"] = ["SIMHEI"]
     plt.rcParams["axes.unicode_minus"] = False
 
     words, freqs = zip(*common_words)
@@ -182,7 +182,7 @@ def analyze_keyword_distribution(word_list, name_ls, num_segments=500, top_n=5):
     # Set font to one that supports Chinese characters
     font_path = r"SIMHEI.TTF"  # Adjust based on your system
     prop = font_manager.FontProperties(fname=font_path)
-    plt.rcParams["font.sans-serif"] = ["SimHei"]  # Use the custom font
+    plt.rcParams["font.sans-serif"] = ["SIMHEI"]  # Use the custom font
     plt.rcParams["axes.unicode_minus"] = False
 
     # If no specific keywords are provided, use the top N frequent words
