@@ -1,10 +1,10 @@
-import jieba
+import chardet
 import string
+import jieba
 import streamlit as st
 from functions import (
     load_stop_words,
     basic_statistics,
-    load_text,
     preprocess_text,
     word_frequency_analysis,
     generate_wordcloud,
@@ -12,30 +12,21 @@ from functions import (
 )
 
 
-def detect_language(text):
-    # A simple heuristic: if the text contains Chinese characters, it's Chinese
-    if any("\u4e00" <= char <= "\u9fff" for char in text):
-        return "chinese"
-    return "english"
+# Encoding detection function
+def detect_encoding(file_content):
+    raw_data = file_content[:10000]  # Use the first 10KB for detection
+    result = chardet.detect(raw_data)
+    return result.get("encoding", None)  # Safely get the encoding or return None
 
 
-def preprocess_text_based_on_language(text, stop_words):
-    language = detect_language(text)
-
-    if language == "chinese":
-        # Use jieba for Chinese tokenization
-        words = jieba.lcut(text)
-    else:
-        # For English, split by whitespace and remove punctuation
-        words = (
-            text.lower().translate(str.maketrans("", "", string.punctuation)).split()
+# Function to load the text file using the detected encoding
+def load_text(file_content):
+    encoding = detect_encoding(file_content)
+    if not encoding:
+        raise ValueError(
+            "Unable to detect encoding. Please ensure the file is a valid text file."
         )
-
-    # Remove stop words and non-alphabetic tokens (for English)
-    filtered_words = [
-        word for word in words if word.isalpha() and word not in stop_words
-    ]
-    return filtered_words
+    return file_content.decode(encoding, errors="ignore")
 
 
 def main():
@@ -46,20 +37,38 @@ def main():
 
     uploaded_file = st.file_uploader("Choose a .txt file", type="txt")
     if uploaded_file is not None:
-        # Read the content of the uploaded file as a string
-        text = uploaded_file.read().decode(
-            "utf-8"
-        )  # Decode the file content to a string
+        # Read the uploaded file content as bytes
+        file_content = uploaded_file.read()
 
-        # Display basic statistics
+        # Load the text using detected encoding
+        try:
+            text = load_text(file_content)
+        except ValueError as e:
+            st.error(str(e))
+            return
+
+        st.write(f"File successfully decoded with detected encoding.")
+
+        # Display basic statistics (if implemented)
         stats = basic_statistics(text)
         st.subheader("Basic Statistics")
-        st.text(stats)  # Display the basic statistics on the UI
+        st.text(stats)
 
+        # Load stop words
         stop_words = load_stop_words()
 
-        # Preprocess the text based on detected language (Chinese or English)
-        words = preprocess_text_based_on_language(text, stop_words)
+        # Preprocess the text (e.g., tokenize and remove stop words)
+        words = preprocess_text(text, stop_words)
+
+        # Filter words: keep only valid words longer than 1 character
+        words = [word for word in words if len(word) > 1 and word not in stop_words]
+        words = [word for word in words if word.isalpha()]
+
+        if not words:
+            st.error(
+                "The text contains no valid words after preprocessing. Please check your input."
+            )
+            return
 
         # Word Frequency Analysis
         st.header("Word Frequency Analysis")
