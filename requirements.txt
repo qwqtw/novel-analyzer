@@ -1,0 +1,6 @@
+streamlit
+chardet
+jieba
+pandas
+matplotlib
+wordcloud
