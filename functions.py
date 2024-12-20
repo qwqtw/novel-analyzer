@@ -12,13 +12,10 @@ import io
 import wordcloud
 import streamlit as st
 
-try:
-    # Attempt to use a custom font
-    rcParams["font.sans-serif"] = ["SimHei"]  # For Chinese
-except Exception as e:
-    print(f"Error loading custom font: {e}")
-    # Fallback to a default font
-    rcParams["font.sans-serif"] = ["DejaVu Sans"]
+# Point matplotlib to the bundled font file
+font_path = "SIMHEI.TTF"
+prop = font_manager.FontProperties(fname=font_path)
+rcParams["font.family"] = prop.get_name()
 
 
 def load_stop_words(
@@ -185,7 +182,8 @@ def analyze_keyword_distribution(word_list, name_ls, num_segments=500, top_n=5):
     # Set font to one that supports Chinese characters
     font_path = r"SIMHEI.TTF"  # Adjust based on your system
     prop = font_manager.FontProperties(fname=font_path)
-    plt.rcParams["font.family"] = prop.get_name()
+    plt.rcParams["font.sans-serif"] = ["SimHei"]  # Use the custom font
+    plt.rcParams["axes.unicode_minus"] = False
 
     # If no specific keywords are provided, use the top N frequent words
     if len(name_ls) == 0:
